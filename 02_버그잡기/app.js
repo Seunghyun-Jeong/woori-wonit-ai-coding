@@ -75,21 +75,61 @@ function renderTransactionList() {
 }
 
 function renderBalance() {
-  const balanceEl = document.getElementById("blance");
+  const balanceEl = document.getElementById("balance");
   balanceEl.textContent = formatCurrency(ACCOUNTS[0].balance);
+}
+
+// ---------- 거래내역 추가 / 화면 갱신 ----------
+
+function nowDatetime() {
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}` +
+    `T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+
+function addTransaction({ txType, amount, category, memo, counterparty }) {
+  const nextTxId = Math.max(...TRANSACTIONS.map((tx) => tx.txId)) + 1;
+  TRANSACTIONS.unshift({
+    txId: nextTxId,
+    txType: txType,
+    amount: amount,
+    category: category,
+    memo: memo,
+    counterparty: counterparty,
+    txDatetime: nowDatetime(),
+  });
+}
+
+// 데이터가 바뀌면 화면 네 곳을 한꺼번에 다시 그린다
+function refreshScreen() {
+  renderBalance();
+  renderAccountList();
+  renderCategorySummary();
+  renderTransactionList();
 }
 
 // ---------- 입금 ----------
 
 function handleDeposit() {
-  ACCOUNTS[0].balance += 10000;
-  alert("10,000원이 입금되었습니다.");
+  const amount = 10000;
+  ACCOUNTS[0].balance += amount;
+  addTransaction({
+    txType: "입금",
+    amount: amount,
+    category: "이체",
+    memo: "입금",
+    counterparty: "본인",
+  });
+  refreshScreen();
+  alert(formatCurrency(amount) + "이 입금되었습니다.");
 }
 
 // ---------- 이자 계산 ----------
 
 function calcInterest(balance, rate) {
-  return balance * rate;
+  // 부동소수점 오차가 화면에 새지 않도록 원 미만은 절사한다
+  return Math.floor(balance * rate);
 }
 
 const interestBtn = document.querySelector("#interestBtn");
@@ -98,7 +138,7 @@ interestBtn.addEventListener("click", () => {
   const interest = calcInterest(ACCOUNTS[0].balance, rate);
   const newBalance = ACCOUNTS[0].balance + interest;
   document.querySelector("#interestResult").textContent =
-    "이자 " + interest + "원 적용 → 잔액 " + newBalance + "원";
+    "이자 " + formatCurrency(interest) + " 적용 → 잔액 " + formatCurrency(newBalance);
 });
 
 // ---------- 환율 ----------
@@ -107,8 +147,12 @@ async function fetchExchangeRate() {
   return new Promise((resolve) => setTimeout(() => resolve(1384), 500));
 }
 
-const rate = fetchExchangeRate();
-document.querySelector("#exchangeRate").textContent = rate + "원";
+async function renderExchangeRate() {
+  const rate = await fetchExchangeRate();
+  document.querySelector("#exchangeRate").textContent = formatCurrency(rate);
+}
+
+renderExchangeRate();
 
 // ---------- 이체 확인 모달 ----------
 
@@ -125,18 +169,31 @@ closeModalBtn.addEventListener("click", () => {
   modalOverlay.classList.add("hidden");
 });
 
+const TRANSFER_TARGET = "박집주인";
+const TRANSFER_AMOUNT = 320000;
+
 confirmTransferBtn.addEventListener("click", () => {
+  if (ACCOUNTS[0].balance < TRANSFER_AMOUNT) {
+    alert("잔액이 부족합니다.");
+    return;
+  }
+
   modalOverlay.classList.add("hidden");
+  ACCOUNTS[0].balance -= TRANSFER_AMOUNT;
+  addTransaction({
+    txType: "출금",
+    amount: TRANSFER_AMOUNT,
+    category: "이체",
+    memo: "이체",
+    counterparty: TRANSFER_TARGET,
+  });
+  refreshScreen();
   alert("이체가 완료되었습니다.");
 });
 
 // ---------- 초기 렌더링 ----------
 
-renderAccountList();
-renderCategorySummary();
-renderTransactionList();
+refreshScreen();
 
 const depositBtn = document.querySelector("#depositBtn");
-depositBtn.addEventListener("click", handleDeposit());
-
-renderBalance();
+depositBtn.addEventListener("click", handleDeposit);

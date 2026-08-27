@@ -1,0 +1,103 @@
+/* 미션 2 — "흰 배경에 모서리 둥글게, 그림자 살짝, 모바일에서 보기 좋게" */
+
+body {
+  margin: 0;
+  padding: 24px 16px;
+  background: #f4f5f7;
+  font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  color: #1f2937;
+}
+
+/* 카드 본체 — 모바일 폭에 맞추고 화면 가운데 정렬 */
+.account-card {
+  max-width: 360px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* 상단 — 통장 종류와 상태 배지를 양 끝으로 */
+.account-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.account-card__type {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.status--ok {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.status--bad {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.account-card__number {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  color: #6b7280;
+  letter-spacing: 0.02em;
+}
+
+.account-card__balance {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.account-card__unit {
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+/* 버튼 — 좁은 화면에서도 손가락으로 누르기 좋은 높이 */
+.account-card__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #f9fafb;
+}
+
+.btn--primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn--primary:hover {
+  background: #1d4ed8;
+}

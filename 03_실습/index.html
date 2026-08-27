@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>계좌 카드</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 계좌번호, 잔액, 상태가 보이는 은행 계좌 카드 한 장 -->
+<div class="account-card">
+
+  <div class="account-card__top">
+    <span class="account-card__type">입출금통장</span>
+    <span class="status status--ok">정상</span>
+  </div>
+
+  <p class="account-card__number">1002-345-678901</p>
+
+  <p class="account-card__balance">
+    1,523,000<span class="account-card__unit">원</span>
+  </p>
+
+  <div class="account-card__actions">
+    <button type="button" class="btn btn--primary">이체</button>
+    <button type="button" class="btn">거래내역</button>
+  </div>
+
+</div>
+
+</body>
+</html>
